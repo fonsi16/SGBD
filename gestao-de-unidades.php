@@ -1,6 +1,6 @@
 <?php
 
-    require_once("custom/php/common.php");
+require_once("custom/php/common.php");
 
 if(is_user_logged_in() && current_user_can("manage_unit_types")){
     if( !isset($_REQUEST["estado"])){
