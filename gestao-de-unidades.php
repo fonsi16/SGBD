@@ -1,9 +1,11 @@
 <?php
 
-require_once("custom/php/common.php");
+    require_once("custom/php/common.php");
 
 if(is_user_logged_in() && current_user_can("manage_unit_types")){
-    if( !isset($_REQUEST["estado"])){
+
+    if(!isset($_REQUEST["estado"])){
+
         $query = "SELECT * FROM subitem_unit_type";
         $result = mysqli_query($link, $query);
         $numRow = mysqli_num_rows($result);
@@ -11,6 +13,7 @@ if(is_user_logged_in() && current_user_can("manage_unit_types")){
         if( $numRow==0){
             echo "Não há tipos de unidades<br>";
         }
+        
         else{
             echo"<table>
                     <thead>
@@ -108,7 +111,7 @@ if(is_user_logged_in() && current_user_can("manage_unit_types")){
         }
     }
 }
-else{
+else{ 
     echo"<p style='color:red;'>Não tem autorização para aceder a esta página</p>";
     button_voltar();
 }

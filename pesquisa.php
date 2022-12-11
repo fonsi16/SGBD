@@ -2,6 +2,11 @@
 
 require_once("custom/php/common.php");
 
+
+function operador(){
+
+}
+
 if(is_user_logged_in() && current_user_can("search")){
 
     if(!isset($_REQUEST['estado'])){
@@ -28,7 +33,7 @@ if(is_user_logged_in() && current_user_can("search")){
         }
     }
 
-    elseif($_REQUEST['estado']='escolha'){
+    elseif($_REQUEST['estado']=='escolha'){
 
         $queryNomeItem="SELECT name FROM item WHERE id=".$_REQUEST['item']."";
         $resultNomeItem=mysqli_query($link,$queryNomeItem);
@@ -41,25 +46,86 @@ if(is_user_logged_in() && current_user_can("search")){
                 <table>
                     <thead>
                         <tr>
-                            <th style='text-align:center'>obter</th>
+                            <th>Atributo</th>
+                            <th>Obter</th>
+                            <th>Filtro</th>
                         </tr>
                     </thead>
-
+                    <tbody>";
+                        $queryAtrib="SHOW COLUMNS FROM child";
+                        $resultAtrib=mysqli_query($link,$queryAtrib);
+                        while($atributos=mysqli_fetch_assoc($resultAtrib)){
+                            echo"<tr>
+                                    <td>".$atributos['Field']."</td>
+                                    <td><input type='checkbox' name='obter_atributo[]' value='".$atributos['Field']."'></td>
+                                    <td><input type='checkbox' name='filtro_atributo[]' value='".$atributos['Field']."'></td>
+                                </tr>";
+                        }  
+                       
+            echo    "</tbody>
                 </table>
                 <table>
                     <thead>
                         <tr>
-                            <th style='text-align:center'>filtro</th>
+                            <th>Subitem</th>
+                            <th>Obter</th>
+                            <th>Filtro</th>
                         </tr>
                     </thead>
-
+                    <tbody>";
+                        $querySubitemId="SELECT id,name FROM subitem WHERE item_id=".$_SESSION['id']."";
+                        $resultSubitemId=mysqli_query($link,$querySubitemId);
+                        while($subitem=mysqli_fetch_assoc($resultSubitemId)){
+                            echo"<tr>
+                                    <td>".$subitem['name']."</td>
+                                    <td><input type='checkbox' name='obter_subitem[]' value='".$subitem['id']."'></td>
+                                    <td><input type='checkbox' name='filtro_subitem[]' value='".$subitem['id']."'></td>
+                                </tr>";
+                        }
+                echo"</tbody>
                 </table>
+                <input type='hidden' name='estado' value='escolher_filtros'>
+                <input type='submit' value='Submeter'>
             </form>";
         button_voltar();
     }
 
-    elseif($_REQUEST['estado']='escolher_filtros'){
+    elseif($_REQUEST['estado']=='escolher_filtros'){
 
+        $_SESSION['nome_atributo_obter']=$_REQUEST['obter_atributo'];
+        $_SESSION['nome_atributo_filtro']=$_REQUEST['filtro_atributo'];
+        $_SESSION['id_subitem_obter']=$_REQUEST['obter_subitem'];
+        $_SESSION['id_subitem_filtro']=$_REQUEST['filtro_subitem'];
+
+        /*print_r($_SESSION['nome_atributo_obter']);
+        print_r($_SESSION['nome_atributo_filtro']);
+        print_r($_SESSION['id_subitem_obter']);
+        print_r($_SESSION['id_subitem_filtro']);*/
+
+        //$nomes_subitem_filtro=array();
+
+        //ordena alfabeticamnete
+        sort($_SESSION['nome_atributo_obter']);
+
+        echo"<form action='' method='POST'>
+                <ul>";
+                    foreach($_SESSION['nome_atributo_obter'] as $nomeAtributo){
+                        echo"<li>$nomeAtributo";
+                        if (in_array($nomeAtributo,$_SESSION['nome_atributo_filtro'])){
+                            echo"<div class='operador'> Operador </div>";
+                            //echo$nomeAtributo;
+                        }
+                        echo"</li>";
+                    }
+            echo"</ul>
+            </form>
+        ";
+
+        button_voltar();
+    }
+
+    elseif($_REQUEST['estado']=='execucao'){
+        
     }
 }
 else{

@@ -250,7 +250,6 @@ if(is_user_logged_in() && current_user_can("manage_subitems")){
                     echo"<p style='color:red;'>Ocorreu um erro ao acessar os dados</p>";
                     button_voltar();
                 }
-
         }
     }
 }
